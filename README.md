@@ -1,9 +1,6 @@
 # db-ml-final-project-cs133sp24-sjsu
 
-Dashboard &amp; Machine Learning Project for SJSU Spring 2024 CS 133
-
-Team: Jonathan Manzano & Henry Pham
-
+Team: Jonathan Manzano &amp; Henry Pham  
 Dataset: Autism in children  
 Row Count: 292  
 Column Count: 21
@@ -36,10 +33,8 @@ Column Count: 21
 | relation        | object   | Who is completing the test String Parent, self, caregiver, medical staff, clinician, etc.                                      |
 | ASD             | object   | Case of autism (YES or NO)                                                                                                     |
 
-What are you going to be predicting?
+1. What are you going to be predicting?  
+Machine learning on this dataset will try to predict whether a child has autism spectrum disorder (ASD) by looking at the relation between diagnosed ASD and the scores provided in the dataset, will try to factor in regional differences to account for cultural differences when diagnosing children with ASD.  
 
-Machine learning on this dataset will try to predict whether a child has autism spectrum disorder (ASD). By looking at the relation between diagnosed ASD and the scores provided in the dataset, will try to factor in regional differences to account for cultural differences when diagnosing children with ASD.
-
-What geographical-based information are you going to use (or can you add) for the map visualization?
-
+2. What geographical-based information are you going to use (or can you add) for the map visualization?  
 There is already a region column in the dataset, so we will use that.
