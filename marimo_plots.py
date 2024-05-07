@@ -79,12 +79,11 @@ def __(autism_df, mo, px):
 
     _config = {
        # 'autosize': True,
-        'scrollZoom': True
+        'scrollZoom': True,
               }
 
     # _fig.show() replace with below statement
     plot1 = mo.ui.plotly(_fig, config = _config)
-
     return asd_cases, asd_count_by_country, plot1
 
 
@@ -159,15 +158,8 @@ def __(autism_df, mo, px):
     )
 
     # _fig.show() replace with below statement
-    plot3 = mo.ui.plotly(_fig)
-
-    return plot3,
-
-
-@app.cell
-def __(mo, plot3):
-    mo.hstack([plot3])
-    return
+    family_history_bar_plot = mo.ui.plotly(_fig)
+    return family_history_bar_plot,
 
 
 @app.cell
@@ -194,13 +186,41 @@ def __(autism_df, mo, px):
         legend_title="ASD Diagnosis Outcome"
     )
     # _fig.show()
-    plot4 = mo.ui.plotly(_fig)
-    return plot4,
+    jaundice_bar_plot = mo.ui.plotly(_fig)
+    return jaundice_bar_plot,
 
 
 @app.cell
-def __(mo, plot4):
-    mo.hstack([plot4])
+def __(family_history_bar_plot, jaundice_bar_plot, mo):
+    box_plot_options = mo.ui.dropdown(
+        options=dict(
+            sorted(
+                {
+                    "Jaundice": jaundice_bar_plot,
+                    "Family History": family_history_bar_plot,
+                }.items()
+            )
+        ),
+    )
+    return box_plot_options,
+
+
+@app.cell
+def __(box_plot_options, mo):
+    mo.md(
+        f"""
+        How does an individual's history of Jaundice, family history of Autism, or history of Testing for Autism relate to ASD screening outcomes?  
+        {box_plot_options}  
+
+        {mo.vstack([box_plot_options.value])}
+        """
+    )
+    return
+
+
+@app.cell
+def __(box_plot_options, mo):
+    mo.vstack([box_plot_options.value])
     return
 
 
@@ -211,6 +231,12 @@ def __(mo):
         ## What are the common traits (based on A1-A10 scores) among children diagnosed with ASD compared to those not diagnosed?
         """
     )
+    return
+
+
+@app.cell
+def __(mo, plot5):
+    mo.vstack([plot5])
     return
 
 
@@ -233,15 +259,22 @@ def __(autism_df, mo, px):
         yaxis_title='Average Score',
         legend_title="ASD Diagnosis"
     )
+
+    _config = {
+        'responsive': True,
+
+    }
     # fig.show() replaced below to be able to be seen in app view
-    plot5 = mo.ui.plotly(_fig)
+    plot5 = mo.ui.plotly(_fig, _config)
     return mean_scores, melted_data, plot5
 
 
 @app.cell
-def __(mo, plot5):
-    mo.hstack([plot5])
-    return
+def __(autism_df, mo):
+    dataframe = mo.ui.dataframe(autism_df)
+    mo.ui.dataframe(autism_df)
+    # mo.ui.dataframe(autism_df, on_change= )
+    return dataframe,
 
 
 @app.cell
