@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.5.0"
-app = marimo.App()
+app = marimo.App(width="medium")
 
 
 @app.cell
@@ -73,7 +73,7 @@ def __(mo, plot1):
         {plot1}
 
 
-        
+
         """
     )
     return q1,
@@ -112,7 +112,7 @@ def __(mo, q2):
     mo.md(
         f"""
         ## How does the Total ASD Screening Score vary by Gender, Jaundice, Family History of Autism, or Screening History?  
-        
+
         {mo.accordion({"Find out !":q2})}
         """
     )
@@ -256,20 +256,6 @@ def __(mo, q3):
         ## Is there a relationship between the ASD Screening Outcomes and _____ ?
 
         {mo.accordion({"Look here !": q3})}
-
-        wowowowow
-        asdfgsdg
-        sdg
-        sd
-        gs
-        g
-        sgd
-        sdg
-        s
-        gs
-        dgs
-        g
-        
         """
     )
     return
@@ -285,8 +271,8 @@ def __(bar_plot_options, mo):
 
         {bar_plot_options.value}
 
-        
-        
+
+
         """
     )
     return q3,
@@ -296,13 +282,13 @@ def __(bar_plot_options, mo):
 def __(family_history_bar_plot, jaundice_bar_plot, mo, screening_bar_plot):
     bar_plot_options = mo.ui.tabs(
         tabs=dict(
-            
+
                 {
                     "😮 Jaundice         ": jaundice_bar_plot,
                     "👫 Family History   ": family_history_bar_plot,
                     "📑 Screening History": screening_bar_plot
                 }
-            
+
         )
     )
 
@@ -440,7 +426,7 @@ def __(age_line_plot, mo):
         {mo.as_html(age_line_plot)}  
 
 
-        
+
         """
     )
     return q4,
@@ -491,7 +477,7 @@ def __(mo, plot5):
         {mo.as_html(plot5)}
 
 
-        
+
         """
     )
     return q5,
@@ -550,7 +536,7 @@ def __(mo, score_probs_plot):
         {mo.as_html(score_probs_plot)}
 
 
-        
+
         """
     )
     return q6,
