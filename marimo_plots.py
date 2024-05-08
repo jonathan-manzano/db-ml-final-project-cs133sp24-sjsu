@@ -44,8 +44,12 @@ def __():
 
 
 @app.cell
-def __(autism_df):
-    autism_df
+def __(autism_df, mo):
+    mo.md(
+        f"""
+        ## {mo.accordion({"Autism Dataset" : autism_df})}
+        """
+    )
     return
 
 
@@ -98,7 +102,6 @@ def __(box_plots_dropdown, mo):
     q1 = mo.md(
         f"""
         ## Distribution of Scores by:  
-
         {box_plots_dropdown}
 
         {box_plots_dropdown.value}
@@ -109,7 +112,11 @@ def __(box_plots_dropdown, mo):
 
 @app.cell
 def __(mo, q1):
-    mo.accordion({"What is ur mom?":q1})
+    mo.md(
+        f"""
+        ## {mo.accordion({"How does the Total ASD Screening Score vary by Gender, Jaundice, Family History of Autism, or Screening History?":q1})}
+        """
+    )
     return
 
 
@@ -123,16 +130,16 @@ def __(
 ):
     box_plots_dropdown = mo.ui.tabs(
         tabs=dict(
-            sorted(
+            
                 {
                 'Gender': gender_box_plot,
                 'Jaundice': jaundice_box_plot,
                 'Family History': family_history_box_plot,
                 'Screening History': screening_box_plot
                 }.items()
-            )
+            
         ),
-        value = 'Family History'
+        value = 'Gender'
     )
     return box_plots_dropdown,
 
@@ -212,7 +219,7 @@ def __(autism_df, px):
             y=1.02,
             xanchor="right",
             x=1)
-        
+
     )
 
     # _fig.show() replace with below statement
@@ -226,11 +233,11 @@ def __():
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def __(bar_plot_options, mo):
     mo.md(
         f"""
-        ## How does an individual's history of Jaundice, family history of Autism, or history of Testing for Autism; Relate to ASD screening outcomes?  
+        ## Relationship between:  
         {bar_plot_options}  
 
         {bar_plot_options.value}
