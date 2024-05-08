@@ -23,7 +23,8 @@ def __():
     import pandas as pd
     import os
     import plotly.express as px
-    return os, pd, px
+    import plotly.graph_objects as go
+    return go, os, pd, px
 
 
 @app.cell
@@ -54,13 +55,28 @@ def __(autism_df, mo):
 
 
 @app.cell
-def __(mo):
+def __(mo, q1):
     mo.md(
-        r"""
-        ## What is the distribution of ASD cases across different countries?
+        f"""
+        ## What is the distribution of ASD cases across different countries?  
+        {mo.accordion({"Click me !": q1})}
         """
     )
     return
+
+
+@app.cell
+def __(mo, plot1):
+    # add plot descrips here @line6
+    q1 = mo.md(
+        f"""
+        {plot1}
+
+
+        
+        """
+    )
+    return q1,
 
 
 @app.cell
@@ -92,32 +108,32 @@ def __(autism_df, mo, px):
 
 
 @app.cell
-def __(mo, plot1):
-    mo.hstack([plot1])
+def __(mo, q2):
+    mo.md(
+        f"""
+        ## How does the Total ASD Screening Score vary by Gender, Jaundice, Family History of Autism, or Screening History?  
+        
+        {mo.accordion({"Find out !":q2})}
+        """
+    )
     return
 
 
 @app.cell
 def __(box_plots_dropdown, mo):
-    q1 = mo.md(
+    # add plot descrips here @line9
+    q2 = mo.md(
         f"""
         ## Distribution of Scores by:  
         {box_plots_dropdown}
 
         {box_plots_dropdown.value}
-        """
-    )
-    return q1,
 
 
-@app.cell
-def __(mo, q1):
-    mo.md(
-        f"""
-        ## {mo.accordion({"How does the Total ASD Screening Score vary by Gender, Jaundice, Family History of Autism, or Screening History?":q1})}
+
         """
     )
-    return
+    return q2,
 
 
 @app.cell
@@ -130,14 +146,14 @@ def __(
 ):
     box_plots_dropdown = mo.ui.tabs(
         tabs=dict(
-            
+
                 {
-                'Gender': gender_box_plot,
-                'Jaundice': jaundice_box_plot,
-                'Family History': family_history_box_plot,
-                'Screening History': screening_box_plot
+                '💪 Gender           ': gender_box_plot,
+                '😮 Jaundice         ': jaundice_box_plot,
+                '👫 Family History   ': family_history_box_plot,
+                '📑 Screening History': screening_box_plot
                 }.items()
-            
+
         ),
         value = 'Gender'
     )
@@ -234,30 +250,60 @@ def __():
 
 
 @app.cell
-def __(bar_plot_options, mo):
+def __(mo, q3):
     mo.md(
         f"""
-        ## Relationship between:  
-        {bar_plot_options}  
+        ## Is there a relationship between the ASD Screening Outcomes and _____ ?
 
-        {bar_plot_options.value}
+        {mo.accordion({"Look here !": q3})}
+
+        wowowowow
+        asdfgsdg
+        sdg
+        sd
+        gs
+        g
+        sgd
+        sdg
+        s
+        gs
+        dgs
+        g
+        
         """
     )
     return
 
 
 @app.cell
+def __(bar_plot_options, mo):
+    # add plot descrips here @line 9
+    q3 = mo.md(
+        f"""
+        ## Relationship between:  
+        {bar_plot_options}  
+
+        {bar_plot_options.value}
+
+        
+        
+        """
+    )
+    return q3,
+
+
+@app.cell
 def __(family_history_bar_plot, jaundice_bar_plot, mo, screening_bar_plot):
     bar_plot_options = mo.ui.tabs(
         tabs=dict(
-            sorted(
+            
                 {
-                    "💥 Jaundice": jaundice_bar_plot,
-                    "❗ Family History": family_history_bar_plot,
-                    "💢 Screening History": screening_bar_plot
-                }.items()
-            )
-        ),
+                    "😮 Jaundice         ": jaundice_bar_plot,
+                    "👫 Family History   ": family_history_bar_plot,
+                    "📑 Screening History": screening_bar_plot
+                }
+            
+        )
     )
 
     bar_config = {
@@ -375,14 +421,80 @@ def __(autism_df, px):
 
 
 @app.cell
+def __(mo, q4):
+    mo.md(
+        f"""
+        ## What is the distribution of Scores based on the Age of an invdividual who has or has not used a Screening App before?
+
+        {mo.accordion({"Plot it !": q4})}
+        """
+    )
+    return
+
+
+@app.cell
+def __(age_line_plot, mo):
+    # add plot descrips here @line 6
+    q4 = mo.md(
+        f"""
+        {mo.as_html(age_line_plot)}  
+
+
+        
+        """
+    )
+    return q4,
+
+
+@app.cell
+def __(autism_df, px):
+    _score_age_distribution = autism_df.groupby(['age', 'total_score']).size().reset_index(name='count')
+
+    # Pivot the table for plotting: ages are now the lines, total_score is x-axis
+    _score_age_pivot = _score_age_distribution.pivot(index='total_score', columns='age', values='count').fillna(0)
+
+    # Create the line plot with ages as separate lines
+    _fig = px.line(_score_age_pivot, labels={'value': 'Count of Children', 'index': 'Total Test Score'})
+    _fig.update_layout(
+        title="Age-specific Distribution of Total Test Scores",
+        xaxis_title="Total Test Score",
+        yaxis_title="Count of Children",
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01
+        )
+    )
+
+    # Show the figure
+    age_line_plot = _fig
+    return age_line_plot,
+
+
+@app.cell
 def __(mo, plot5):
     mo.md(
         f"""
         ## What are the common traits (based on A1-A10 scores) among children diagnosed with ASD compared to those not diagnosed?  
-        {plot5}
+        {mo.accordion({"Again !": plot5})}
         """
     )
     return
+
+
+@app.cell
+def __(mo, plot5):
+    # add plot descrips here @line6
+    q5 = mo.md(
+        f"""
+        {mo.as_html(plot5)}
+
+
+        
+        """
+    )
+    return q5,
 
 
 @app.cell
@@ -419,11 +531,64 @@ def __(autism_df, mo, px):
 
 
 @app.cell
-def __(autism_df, mo):
-    dataframe = mo.ui.dataframe(autism_df)
-    mo.ui.dataframe(autism_df)
-    # mo.ui.dataframe(autism_df, on_change= )
-    return dataframe,
+def __(mo, score_probs_plot):
+    mo.md(
+        f"""
+        ## What is the probability of each Question being answered "Yes" among individuals diagnosed with ASD?
+
+        {mo.accordion({"Last time!": score_probs_plot})}
+        """
+    )
+    return
+
+
+@app.cell
+def __(mo, score_probs_plot):
+    # add plot descrips here @line6
+    q6 = mo.md(
+        f"""
+        {mo.as_html(score_probs_plot)}
+
+
+        
+        """
+    )
+    return q6,
+
+
+@app.cell
+def __(autism_df, go):
+    # Filter data for individuals diagnosed with ASD
+    _asd_yes = autism_df[autism_df["ASD"] == "YES"]
+
+    # Calculate the percentage of 'Yes' responses for each question among ASD diagnosed individuals
+    _question_columns = [col for col in autism_df.columns if "Score" in col]
+    _percentages = [(_asd_yes[col].sum() / len(_asd_yes)) * 100 for col in _question_columns]
+
+    # Format percentages to two significant figures
+    _formatted_percentages = ["{:.2f}%".format(p) for p in _percentages]
+
+    # Create a bar chart to visualize this data
+    _fig_bar = go.Figure(
+        [
+            go.Bar(
+                x=_question_columns,
+                y=_percentages,
+                text=_formatted_percentages,
+                textposition="auto",
+            )
+        ]
+    )
+    _fig_bar.update_layout(
+        title_text='Percentage of "Yes" Responses for Each Question Among ASD Diagnosed Individuals',
+        xaxis_title="Question",
+        yaxis_title="Percentage of 'Yes' Responses (%)",
+        yaxis=dict(range=[0, 100]),
+    )
+
+    # Show the figure
+    score_probs_plot = _fig_bar
+    return score_probs_plot,
 
 
 @app.cell
