@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.4.11"
+__generated_with = "0.5.0"
 app = marimo.App()
 
 
@@ -44,8 +44,12 @@ def __():
 
 
 @app.cell
-def __(autism_df):
-    autism_df
+def __(autism_df, mo):
+    mo.md(
+        f"""
+        ## {mo.accordion({"Autism Dataset" : autism_df})}
+        """
+    )
     return
 
 
@@ -79,12 +83,11 @@ def __(autism_df, mo, px):
 
     _config = {
        # 'autosize': True,
-        'scrollZoom': True
+        'scrollZoom': True,
               }
 
     # _fig.show() replace with below statement
     plot1 = mo.ui.plotly(_fig, config = _config)
-
     return asd_cases, asd_count_by_country, plot1
 
 
@@ -95,93 +98,232 @@ def __(mo, plot1):
 
 
 @app.cell
-def __(mo):
+def __(box_plots_dropdown, mo):
+    q1 = mo.md(
+        f"""
+        ## Distribution of Scores by:  
+        {box_plots_dropdown}
+
+        {box_plots_dropdown.value}
+        """
+    )
+    return q1,
+
+
+@app.cell
+def __(mo, q1):
     mo.md(
-        r"""
-        ## How does the total ASD screening score vary by gender?
+        f"""
+        ## {mo.accordion({"How does the Total ASD Screening Score vary by Gender, Jaundice, Family History of Autism, or Screening History?":q1})}
         """
     )
     return
 
 
 @app.cell
-def __(autism_df, mo, px):
+def __(
+    family_history_box_plot,
+    gender_box_plot,
+    jaundice_box_plot,
+    mo,
+    screening_box_plot,
+):
+    box_plots_dropdown = mo.ui.tabs(
+        tabs=dict(
+            
+                {
+                'Gender': gender_box_plot,
+                'Jaundice': jaundice_box_plot,
+                'Family History': family_history_box_plot,
+                'Screening History': screening_box_plot
+                }.items()
+            
+        ),
+        value = 'Gender'
+    )
+    return box_plots_dropdown,
+
+
+@app.cell
+def __(autism_df, px):
     # Create a box plot to visualize the distribution of total scores by gender
     _fig = px.box(autism_df, x='gender', y='total_score', 
                  points="all",  # This option shows all points (outliers)
                  title='Distribution of Total ASD Screening Scores by Gender',
                  labels={'total_score': 'Total ASD Screening Score', 'gender': 'Gender'},
-                 color='gender')  # Color by gender to distinguish easily
+                 color='gender'
+                 )  # Color by gender to distinguish easily
 
     _fig.update_layout(
         xaxis_title='Gender',
         yaxis_title='Total ASD Screening Score',
-        legend_title="Gender"
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
 
     # _fig.show() replace with below statement
-    plot2 = mo.ui.plotly(_fig)
-    return plot2,
+    gender_box_plot = _fig
+    return gender_box_plot,
 
 
 @app.cell
-def __(mo, plot2):
-    mo.hstack([plot2])
+def __(autism_df, px):
+    # Create a box plot to visualize the distribution of total scores by jaundice
+    _fig = px.box(autism_df, x='jundice', y='total_score', 
+                 points="all",  # This option shows all points (outliers)
+                 title='Distribution of Total ASD Screening Scores by Jaundice',
+                 labels={'total_score': 'Total ASD Screening Score', 'jundice': 'Jaundice'},
+                 color='jundice',
+                 color_discrete_sequence=px.colors.qualitative.T10, 
+                 category_orders= {"jundice": ["yes", "no"]})  # Color by jundice to distinguish easily
+
+    _fig.update_layout(
+        xaxis_title='Jaundice at Birth',
+        yaxis_title='Total ASD Screening Score',
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
+    )
+
+    # _fig.show() replace with below statement
+    jaundice_box_plot = _fig
+    return jaundice_box_plot,
+
+
+@app.cell
+def __(autism_df, px):
+    # Create a box plot to visualize the distribution of total scores by screening history
+    _fig = px.box(autism_df, x='used_app_before', y='total_score', 
+                 points="all",  # This option shows all points (outliers)
+                 title='Distribution of Total ASD Screening Scores by Screening History',
+                 labels={'total_score': 'Total ASD Screening Score', 'used_app_before': 'Screening History'},
+                 color='used_app_before',
+                 category_orders= {"used_app_before": ["yes", "no"]})  # Color by Screening History to distinguish easily
+
+    _fig.update_layout(
+        xaxis_title='Screening History',
+        yaxis_title='Total ASD Screening Score',
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
+
+    )
+
+    # _fig.show() replace with below statement
+    screening_box_plot = _fig
+    return screening_box_plot,
+
+
+@app.cell
+def __():
+    ## history_box_plot is linked with another cell
     return
 
 
 @app.cell
-def __(mo):
+def __(bar_plot_options, mo):
     mo.md(
-        r"""
-        ## Is there a relationship between family history of autism and the ASD screening outcomes?
+        f"""
+        ## Relationship between:  
+        {bar_plot_options}  
+
+        {bar_plot_options.value}
         """
     )
     return
 
 
 @app.cell
-def __(autism_df, mo, px):
+def __(family_history_bar_plot, jaundice_bar_plot, mo, screening_bar_plot):
+    bar_plot_options = mo.ui.tabs(
+        tabs=dict(
+            sorted(
+                {
+                    "💥 Jaundice": jaundice_bar_plot,
+                    "❗ Family History": family_history_bar_plot,
+                    "💢 Screening History": screening_bar_plot
+                }.items()
+            )
+        ),
+    )
+
+    bar_config = {
+        'displayModeBar': False
+    }
+    return bar_config, bar_plot_options
+
+
+@app.cell
+def __(autism_df, px):
+    # family history bar & box plot
+
     _autism_df = autism_df.copy()
     # Create a new column for simplicity in plotting
     _autism_df['family_history'] = autism_df['austim'].apply(lambda x: 'With Family History' if x == 'yes' else 'No Family History')
 
     # Create a stacked bar chart to visualize the relationship between family history and ASD outcomes
     _fig = px.bar(_autism_df, x='family_history', color='ASD', 
-                 title='Relationship Between Family History of Autism and ASD Outcomes',
+                 title='Relationship Between Family History of Autism and ASD Diagnosis',
                  labels={'family_history': 'Family History of Autism', 'ASD': 'ASD Screening Outcome'},
-                 barmode='stack')
+                  barmode='group',
+                  category_orders={"family_history": ["With Family History", "No Family History"], "ASD": ["YES", "NO"]},
+                 color_discrete_sequence=px.colors.qualitative.T10
+                 )
 
     _fig.update_layout(
         xaxis_title='Family History of Autism',
-        yaxis_title='Count of Screening Outcomes',
-        legend_title="ASD Outcome"
+        yaxis_title='Count of ASD Outcomes',
+        legend_title="ASD Diagnosis",
+        yaxis_range=[0,130],
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
 
     # _fig.show() replace with below statement
-    plot3 = mo.ui.plotly(_fig)
+    family_history_bar_plot = _fig
 
-    return plot3,
+    # box plot
 
+    _fig = px.box(_autism_df, x='family_history', y = 'total_score', color='family_history', 
+                 title='Distribution of Total ASD Screening Scores by Family History of ASD', 
+                  points = 'all',
+                 labels={'family_history': 'Family History of Autism', 'total_score': 'Total ASD Screening Score',},
+                  category_orders={"family_history": ["With Family History", "No Family History"]}) 
 
-@app.cell
-def __(mo, plot3):
-    mo.hstack([plot3])
-    return
-
-
-@app.cell
-def __(mo):
-    mo.md(
-        r"""
-        ## How does the presence of jaundice at birth relate to ASD diagnosis?
-        """
+    _fig.update_layout(
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
-    return
+
+    family_history_box_plot = _fig
+    return family_history_bar_plot, family_history_box_plot
 
 
 @app.cell
-def __(autism_df, mo, px):
+def __(autism_df, px):
+    # jaundice history bar plot
     # Create a grouped bar chart to visualize the relationship between jaundice and ASD outcomes
     _fig = px.bar(autism_df, x='jundice', color='ASD', barmode='group',
                  title='Relationship Between Jaundice at Birth and ASD Diagnosis',
@@ -191,24 +333,53 @@ def __(autism_df, mo, px):
     _fig.update_layout(
         xaxis_title='Jaundice at Birth',
         yaxis_title='Count of ASD Outcomes',
-        legend_title="ASD Diagnosis Outcome"
+        legend_title="ASD Diagnosis",
+        yaxis_range=[0,130],
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
     # _fig.show()
-    plot4 = mo.ui.plotly(_fig)
-    return plot4,
+    jaundice_bar_plot = _fig
+    return jaundice_bar_plot,
 
 
 @app.cell
-def __(mo, plot4):
-    mo.hstack([plot4])
-    return
+def __(autism_df, px):
+    # Screening history bar plot
+
+    # Create a grouped bar chart to visualize the relationship between Screening App History and ASD outcomes
+    _fig = px.bar(autism_df, x='jundice', color='ASD', barmode='group',
+                 title='Relationship Between Screening History and ASD Diagnosis',
+                 labels={'used_app_before': 'Screening History', 'ASD': 'ASD Diagnosis Outcome'},
+                 category_orders={"used_app_before": ["yes", "no"], "ASD": ["YES", "NO"]})  # Ensure consistent order
+
+    _fig.update_layout(
+        xaxis_title='Used a Screening App Before',
+        yaxis_title='Count of ASD Outcomes',
+        legend_title="ASD Diagnosis",
+        yaxis_range=[0,130],
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
+    )
+    # _fig.show()
+    screening_bar_plot = _fig
+    return screening_bar_plot,
 
 
 @app.cell
-def __(mo):
+def __(mo, plot5):
     mo.md(
-        r"""
-        ## What are the common traits (based on A1-A10 scores) among children diagnosed with ASD compared to those not diagnosed?
+        f"""
+        ## What are the common traits (based on A1-A10 scores) among children diagnosed with ASD compared to those not diagnosed?  
+        {plot5}
         """
     )
     return
@@ -226,22 +397,33 @@ def __(autism_df, mo, px):
     # Create a grouped bar chart
     _fig = px.bar(melted_data, x='Question', y='Average Score', color='ASD', barmode='group',
                  title='Common Traits Based on A1-A10 Scores Among ASD Diagnosed and Non-Diagnosed Children',
-                 labels={'Question': 'Question (A1-A10)', 'Average Score': 'Average Score'})
+                 labels={'Question': 'Question (A1-A10)', 'Average Score': 'Average Score'},
+                 category_orders={"jundice": ["yes", "no"], "ASD": ["YES", "NO"]},
+                  color_discrete_sequence=px.colors.qualitative.T10,
+                 )
+
 
     _fig.update_layout(
         xaxis_title='Questions (A1 to A10)',
         yaxis_title='Average Score',
         legend_title="ASD Diagnosis"
     )
+
+    _config = {
+        'responsive': True,
+        'displayModeBar': False
+    }
     # fig.show() replaced below to be able to be seen in app view
-    plot5 = mo.ui.plotly(_fig)
+    plot5 = mo.ui.plotly(_fig, _config)
     return mean_scores, melted_data, plot5
 
 
 @app.cell
-def __(mo, plot5):
-    mo.hstack([plot5])
-    return
+def __(autism_df, mo):
+    dataframe = mo.ui.dataframe(autism_df)
+    mo.ui.dataframe(autism_df)
+    # mo.ui.dataframe(autism_df, on_change= )
+    return dataframe,
 
 
 @app.cell
