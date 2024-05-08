@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.4.11"
+__generated_with = "0.5.0"
 app = marimo.App()
 
 
@@ -50,20 +50,6 @@ def __(autism_df):
 
 
 @app.cell
-def __(autism_df, indiv_scores):
-    _score_df = autism_df.copy()
-
-    _score_df['Score'] = _score_df[indiv_scores]
-    return
-
-
-@app.cell
-def __(autism_df, mo):
-    mo.ui.dataframe(autism_df)
-    return
-
-
-@app.cell
 def __(mo):
     mo.md(
         r"""
@@ -109,15 +95,21 @@ def __(mo, plot1):
 
 @app.cell
 def __(box_plots_dropdown, mo):
-    mo.md(
+    q1 = mo.md(
         f"""
         ## Distribution of Scores by:  
-        
+
         {box_plots_dropdown}
 
         {box_plots_dropdown.value}
         """
     )
+    return q1,
+
+
+@app.cell
+def __(mo, q1):
+    mo.accordion({"What is ur mom?":q1})
     return
 
 
@@ -129,8 +121,8 @@ def __(
     mo,
     screening_box_plot,
 ):
-    box_plots_dropdown = mo.ui.dropdown(
-        options=dict(
+    box_plots_dropdown = mo.ui.tabs(
+        tabs=dict(
             sorted(
                 {
                 'Gender': gender_box_plot,
@@ -158,7 +150,13 @@ def __(autism_df, px):
     _fig.update_layout(
         xaxis_title='Gender',
         yaxis_title='Total ASD Screening Score',
-        legend_title="Gender"
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
 
     # _fig.show() replace with below statement
@@ -174,12 +172,19 @@ def __(autism_df, px):
                  title='Distribution of Total ASD Screening Scores by Jaundice',
                  labels={'total_score': 'Total ASD Screening Score', 'jundice': 'Jaundice'},
                  color='jundice',
+                 color_discrete_sequence=px.colors.qualitative.T10, 
                  category_orders= {"jundice": ["yes", "no"]})  # Color by jundice to distinguish easily
 
     _fig.update_layout(
         xaxis_title='Jaundice at Birth',
         yaxis_title='Total ASD Screening Score',
-        legend_title="Jaundice"
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
     )
 
     # _fig.show() replace with below statement
@@ -200,7 +205,14 @@ def __(autism_df, px):
     _fig.update_layout(
         xaxis_title='Screening History',
         yaxis_title='Total ASD Screening Score',
-        legend_title="Screening History"
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
+        
     )
 
     # _fig.show() replace with below statement
@@ -214,7 +226,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(bar_plot_options, mo):
     mo.md(
         f"""
@@ -260,7 +272,9 @@ def __(autism_df, px):
                  title='Relationship Between Family History of Autism and ASD Diagnosis',
                  labels={'family_history': 'Family History of Autism', 'ASD': 'ASD Screening Outcome'},
                   barmode='group',
-                  category_orders={"family_history": ["With Family History", "No Family History"], "ASD": ["YES", "NO"]})
+                  category_orders={"family_history": ["With Family History", "No Family History"], "ASD": ["YES", "NO"]},
+                 color_discrete_sequence=px.colors.qualitative.T10
+                 )
 
     _fig.update_layout(
         xaxis_title='Family History of Autism',
@@ -286,14 +300,18 @@ def __(autism_df, px):
                  labels={'family_history': 'Family History of Autism', 'total_score': 'Total ASD Screening Score',},
                   category_orders={"family_history": ["With Family History", "No Family History"]}) 
 
+    _fig.update_layout(
+        legend_title=" ",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1)
+    )
+
     family_history_box_plot = _fig
     return family_history_bar_plot, family_history_box_plot
-
-
-@app.cell
-def __(family_history_box_plot):
-    family_history_box_plot
-    return
 
 
 @app.cell
@@ -373,7 +391,8 @@ def __(autism_df, mo, px):
     _fig = px.bar(melted_data, x='Question', y='Average Score', color='ASD', barmode='group',
                  title='Common Traits Based on A1-A10 Scores Among ASD Diagnosed and Non-Diagnosed Children',
                  labels={'Question': 'Question (A1-A10)', 'Average Score': 'Average Score'},
-                 category_orders={"jundice": ["yes", "no"], "ASD": ["YES", "NO"]}
+                 category_orders={"jundice": ["yes", "no"], "ASD": ["YES", "NO"]},
+                  color_discrete_sequence=px.colors.qualitative.T10,
                  )
 
 
