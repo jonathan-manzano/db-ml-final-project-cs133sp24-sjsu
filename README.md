@@ -1,6 +1,8 @@
 # db-ml-final-project-cs133sp24-sjsu
 Dashboard &amp; Machine Learning Project for SJSU Spring 2024 CS 133 
 
+NEXT: use this link as a new autism dataset [Kaggle Autism link](https://www.kaggle.com/competitions/autismdiagnosis/data)
+
 Team: Jonathan Manzano &amp; Henry Pham  
 Dataset: Autism in children  
 Row Count: 292  
